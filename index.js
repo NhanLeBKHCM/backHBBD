@@ -36,20 +36,22 @@ var mailOptions = (list, email) => {
   };
 };
 
-app.post("/complete", (req, res) => {
+app.post("/complete", async (req, res) => {
   console.log(req.body.email);
   iden.playcount -= 1;
-  transporter.sendMail(
-    mailOptions(req.body.data, req.body.email ?? ""),
-    function (error, info) {
-      if (error) {
-        console.log(error);
-      } else {
-        console.log("Email sent: " + info.response);
-      }
-    }
-  );
   res.send({ result: "success" });
+  await new Promise((resolve, reject) => {
+    transporter.sendMail(
+      mailOptions(req.body.data, req.body.email ?? ""),
+      function (error, info) {
+        if (error) {
+          console.log(error);
+        } else {
+          console.log("Email sent: " + info.response);
+        }
+      }
+    );
+  });
 });
 
 app.get("/play", (req, res) => {

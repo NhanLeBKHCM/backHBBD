@@ -10,9 +10,9 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-var nodemailer = require("nodemailer");
+let nodemailer = require("nodemailer");
 
-var transporter = nodemailer.createTransport({
+let transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
     user: "thanhnhanle1407@gmail.com",
@@ -40,18 +40,16 @@ app.post("/complete", async (req, res) => {
   console.log(req.body.email);
   iden.playcount -= 1;
   res.send({ result: "success" });
-  await new Promise((resolve, reject) => {
-    transporter.sendMail(
-      mailOptions(req.body.data, req.body.email ?? ""),
-      function (error, info) {
-        if (error) {
-          console.log(error);
-        } else {
-          console.log("Email sent: " + info.response);
-        }
+  await transporter.sendMail(
+    mailOptions(req.body.data, req.body.email ?? ""),
+    function (error, info) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log("Email sent: " + info.response);
       }
-    );
-  });
+    }
+  );
 });
 
 app.get("/play", (req, res) => {

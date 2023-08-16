@@ -20,29 +20,39 @@ var transporter = nodemailer.createTransport({
   },
 });
 
-var mailOptions = (list) => {
+var mailOptions = (list, email) => {
   return {
     from: "thanhnhanle1407@gmail.com",
-    to: "thanhnhanle1407@gmail.com",
+    to: email,
     subject: "Happy birthday!",
-    text: `Dear Người tốt!
-    Chúc mừng người tốt đã giành được những phần quà rất giá trị từ chương trình bao gồm ${list.toString()}`,
+    text: `
+    Dear Người tốt!
+    Lời nói đầu tiên xin chúc bạn có một ngày sinh nhật vui vẻ. Chúc mừng bạn đã giành được những phần quà rất giá trị từ chương trình bao gồm [${list
+      .toString()
+      .replaceAll(",", ", ")}]
+    Để nhận thưởng, bạn vui lòng liên hệ chị Nguyễn Mai Thủy Ngân.
+    Thân
+    Từ một người tốt khác`,
   };
 };
 
-app.post("/mark", (req, res) => {
+app.post("/complete", (req, res) => {
+  console.log(req.body.email);
   iden.playcount -= 1;
-  transporter.sendMail(mailOptions(req.body.data), function (error, info) {
-    if (error) {
-      console.log(error);
-    } else {
-      console.log("Email sent: " + info.response);
+  transporter.sendMail(
+    mailOptions(req.body.data, req.body.email ?? ""),
+    function (error, info) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log("Email sent: " + info.response);
+      }
     }
-  });
+  );
   res.send({ result: "success" });
 });
 
-app.get("/check", (req, res) => {
+app.get("/play", (req, res) => {
   if (iden.playcount == 1) {
     res.send({ result: "success" });
   } else {

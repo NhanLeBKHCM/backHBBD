@@ -42,8 +42,8 @@ app.post("/complete", async (req, res) => {
   console.log(req.body.email);
   iden.playcount -= 1;
   res.send({ result: "success" });
-  await new Promise((resolve, reject) => {
-    transporter.sendMail(
+  await new Promise(async (resolve, reject) => {
+    return transporter.sendMail(
       mailOptions(req.body.data, req.body.email ?? ""),
       function (error, info) {
         if (error) {

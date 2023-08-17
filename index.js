@@ -14,8 +14,6 @@ var nodemailer = require("nodemailer");
 
 var transporter = nodemailer.createTransport({
   service: "gmail",
-  host: "stmp.gmail.com",
-  port: 587,
   auth: {
     user: "thanhnhanle1407@gmail.com",
     pass: "atfvslwladjzywfo",
@@ -43,7 +41,7 @@ app.post("/complete", async (req, res) => {
   iden.playcount -= 1;
   res.send({ result: "success" });
   await new Promise(async (resolve, reject) => {
-    return await transporter.sendMail(
+    transporter.sendMail(
       mailOptions(req.body.data, req.body.email ?? ""),
       function (error, info) {
         if (error) {
